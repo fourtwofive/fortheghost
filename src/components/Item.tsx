@@ -1,36 +1,49 @@
-import { Sprite } from "@pixi/react";
-import { useState } from "react";
-import { Howl } from "howler";
+import { Sprite, useTick } from "@pixi/react";
+import { useState, useRef } from "react";
+import useGameStore from "../store/useGameStore";
 
-export default function Item({
-  x,
-  y,
-  onCollect,
-}: {
-  x: number;
+interface ItemProps {
+  type: "candle" | "tomb";
   y: number;
-  onCollect: () => void;
-}) {
+}
+
+export default function Item({ type, y }: ItemProps) {
+  const { ghostY, addScore } = useGameStore();
+  const [x, setX] = useState(850);
   const [collected, setCollected] = useState(false);
-  const sound = new Howl({ src: ["/collect.wav"] });
+  const speed = 5;
+  const ref = useRef<any>(null);
 
-  const handleClick = () => {
-    if (!collected) {
-      setCollected(true);
-      sound.play();
-      onCollect();
-    }
-  };
+  // ✅ Pixi 내부 렌더 루프에 직접 업데이트 (React state 최소화)
+  useTick(() => {
+    if (collected) return;
+    setX((prev) => {
+      const newX = prev - speed;
 
-  if (collected) return null;
+      // 충돌 감지
+      const ghostX = 100;
+      const distX = Math.abs(newX - ghostX);
+      const distY = Math.abs(y - ghostY);
+
+      if (distX < 40 && distY < 40) {
+        if (type === "candle") addScore(1);
+        setCollected(true);
+      }
+
+      return newX;
+    });
+  });
+
+  if (collected || x < -100) return null;
+
   return (
     <Sprite
-      image="/candle.png"
+      ref={ref}
+      image={type === "candle" ? "/candle.png" : "/tombstone.png"}
       x={x}
       y={y}
-      scale={0.07}
-      interactive
-      pointerdown={handleClick}
+      width={type === "candle" ? 45 : 60}
+      height={type === "candle" ? 45 : 60}
     />
   );
 }

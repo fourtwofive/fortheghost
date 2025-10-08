@@ -1,28 +1,28 @@
 import { Sprite } from "@pixi/react";
-import { useEffect, useState } from "react";
+import * as PIXI from "pixi.js";
+import { useEffect } from "react";
+import useGameStore from "../store/useGameStore";
 
 export default function Player() {
-  const [y, setY] = useState(300); // 초기 위치
-  const speed = 5;
+  const { ghostY, moveGhost } = useGameStore();
 
-  // 키보드 조작 (위아래만)
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowUp") setY((prev) => Math.max(0, prev - speed * 5));
-      if (e.key === "ArrowDown") setY((prev) => Math.min(550, prev + speed * 5));
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowUp") moveGhost("up");
+      if (e.key === "ArrowDown") moveGhost("down");
     };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [moveGhost]);
 
-  // 마우스로도 위아래 이동
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setY(e.clientY - 100);
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  return <Sprite image="/ghost.png" x={150} y={y} scale={0.13} />;
+  return (
+    <Sprite
+      image="/ghost.png"
+      x={100}
+      y={ghostY}
+      width={80}
+      height={80}
+      anchor={new PIXI.Point(0.5, 0.5)}
+    />
+  );
 }
