@@ -39,21 +39,24 @@ export default function Player() {
   // 키보드 입력 처리
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (["ArrowUp", "ArrowDown", "w", "s"].includes(e.key)) {
+        e.preventDefault();
+      }
+
       if (e.key === "ArrowUp" || e.key === "w") setDirection("up");
       if (e.key === "ArrowDown" || e.key === "s") setDirection("down");
     };
+
     const handleKeyUp = (e: KeyboardEvent) => {
-      if (
-        e.key === "ArrowUp" ||
-        e.key === "ArrowDown" ||
-        e.key === "w" ||
-        e.key === "s"
-      ) {
-        setDirection(null);
+      if (["ArrowUp", "ArrowDown", "w", "s"].includes(e.key)) {
+        e.preventDefault();
       }
+      setDirection(null);
     };
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
+
+    window.addEventListener("keydown", handleKeyDown, { passive: false });
+    window.addEventListener("keyup", handleKeyUp, { passive: false });
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
