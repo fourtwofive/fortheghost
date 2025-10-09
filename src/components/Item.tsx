@@ -8,28 +8,28 @@ interface ItemProps {
 }
 
 export default function Item({ type, y }: ItemProps) {
-  const { ghostY, addScore } = useGameStore();
+  const { ghostY, addScore, setGameState } = useGameStore();
   const [x, setX] = useState(850);
   const [collected, setCollected] = useState(false);
   const speed = 5;
   const ref = useRef<any>(null);
 
-  // ✅ Pixi 내부 렌더 루프에 직접 업데이트 (React state 최소화)
   useTick(() => {
     if (collected) return;
     setX((prev) => {
       const newX = prev - speed;
-
-      // 충돌 감지
       const ghostX = 100;
       const distX = Math.abs(newX - ghostX);
       const distY = Math.abs(y - ghostY);
 
       if (distX < 40 && distY < 40) {
-        if (type === "candle") addScore(1);
-        setCollected(true);
+        if (type === "candle") {
+          addScore(1);
+          setCollected(true);
+        } else if (type === "tomb") {
+          setGameState("over"); 
+        }
       }
-
       return newX;
     });
   });

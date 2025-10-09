@@ -12,7 +12,6 @@ export default function Background() {
   const bg2 = useRef<PIXI.Sprite | null>(null);
 
   useLayoutEffect(() => {
-    // GSAP context로 안전하게 관리
     const ctx = gsap.context(() => {
       const s1 = bg1.current;
       const s2 = bg2.current;
@@ -39,7 +38,7 @@ export default function Background() {
       });
     });
 
-    return () => ctx.revert(); // 💥 언마운트 시 트윈 완전 제거
+    return () => ctx.revert();
   }, []);
 
   return (
