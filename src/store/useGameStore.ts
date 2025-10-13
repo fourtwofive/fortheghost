@@ -4,12 +4,12 @@ interface GameState {
   score: number;
   ghostY: number;
   direction: "up" | "down" | null;
-  gameState: "idle" | "playing" | "over"; 
+  gameState: "idle" | "playing" | "dying" | "over";
   addScore: (n: number) => void;
   moveGhost: (dir: "up" | "down") => void;
   setGhostY: (y: number) => void;
   setDirection: (dir: "up" | "down" | null) => void;
-  setGameState: (state: "idle" | "playing" | "over") => void;
+  setGameState: (state: "idle" | "playing" | "over" | "dying") => void;
   reset: () => void;
 }
 
@@ -26,7 +26,7 @@ export const useGameStore = create<GameState>((set) => ({
         Math.min(540, s.ghostY + (dir === "up" ? -30 : 30))
       ),
     })),
-  setGhostY: (y) => set({ ghostY: Math.max(0, Math.min(540, y)) }),
+  setGhostY: (y) => set({ ghostY: Math.max(0, Math.min(1000, y)) }),
   setDirection: (dir) => set({ direction: dir }),
   setGameState: (state) => set({ gameState: state }),
   reset: () =>

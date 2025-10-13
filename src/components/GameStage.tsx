@@ -12,10 +12,9 @@ export default function GameStage() {
     { id: number; y: number; type: "candle" | "tomb" }[]
   >([]);
 
-  const [stageSize, setStageSize] = useState({ width: 800, height: 600 });
-  const baseWidth = 800;
-  const baseHeight = 600;
-
+  const [stageSize, setStageSize] = useState({ width: 1920, height: 1080 });
+  const baseWidth = 1920;
+  const baseHeight = 1080;
   const spawnInterval = 1500;
 
   // 화면 크기 변경 감지해서 Stage 스케일 조정
@@ -45,7 +44,7 @@ export default function GameStage() {
       const type = Math.random() < 0.7 ? "candle" : "tomb";
       setItems((prev) => [
         ...prev,
-        { id: Date.now(), y: 100 + Math.random() * 400, type },
+        { id: Date.now(), y: 100 + Math.random() * 900, type },
       ]);
     }, spawnInterval);
     return () => clearInterval(spawn);
@@ -63,7 +62,7 @@ export default function GameStage() {
       new PIXI.TextStyle({
         fill: "#ffffff",
         fontSize: 32 * scale,
-        fontFamily: "Press Start 2P, monospace",
+        fontFamily: "Press Start 2P, chango",
         stroke: "#000000",
         strokeThickness: 4 * scale,
       }),
@@ -75,7 +74,7 @@ export default function GameStage() {
       draw={(g) => {
         g.clear();
         g.beginFill(0x000000, 0.6);
-        g.drawRect(0, 0, stageSize.width / scale, stageSize.height / scale);
+        g.drawRect(0, 0, stageSize.width, stageSize.height);
         g.endFill();
       }}
 
@@ -135,7 +134,7 @@ export default function GameStage() {
     new PIXI.TextStyle({
       fill: color,
       fontSize: size * scale,
-      fontFamily: "Press Start 2P, monospace",
+      fontFamily: "Press Start 2P, chango",
       align: "center",
       stroke: "#000000",
       strokeThickness: 3 * scale,
@@ -143,16 +142,16 @@ export default function GameStage() {
     });
 
   return (
-    <Container scale={scale}>
+    <Container>
       {background}
 
       {/* 게임 중일 때만 아이템, 플레이어 표시 */}
       {gameState === "playing" &&
         items.map((i) => <Item key={i.id} type={i.type} y={i.y} />)}
-      {gameState === "playing" && <Player />}
+      {(gameState === "playing" || gameState === "dying") && <Player />}
 
       {/* 점수 */}
-      <Text text={`${score}`} x={700} y={20} style={scoreTextStyle} />
+      <Text text={`${score}`} x={1850} y={40} style={scoreTextStyle} />
 
       {/* 게임 시작 화면 */}
       {gameState === "idle" && (
@@ -163,14 +162,14 @@ export default function GameStage() {
             x={baseWidth / 2}
             y={baseHeight / 2 - 60}
             anchor={0.5}
-            style={textStyle("#ffffff", 36)}
+            style={textStyle("#ffffff", 80)}
           />
           <Text
-            text="▶ Click to Start"
+            text="▶ Start "
             x={baseWidth / 2}
             y={baseHeight / 2 + 10}
             anchor={0.5}
-            style={textStyle("#ffcc00", 24)}
+            style={textStyle("#ffcc00", 50)}
             interactive
             cursor="pointer"
             pointerdown={() => setGameState("playing")}
@@ -187,21 +186,21 @@ export default function GameStage() {
             x={baseWidth / 2}
             y={baseHeight / 2 - 80}
             anchor={0.5}
-            style={textStyle("#ff3333", 40)}
+            style={textStyle("#ff3333", 80)}
           />
           <Text
             text={`SCORE : ${score}`}
             x={baseWidth / 2}
-            y={baseHeight / 2 - 20}
+            y={baseHeight / 2 - 10}
             anchor={0.5}
-            style={textStyle("#ffffff", 24)}
+            style={textStyle("#ffffff", 50)}
           />
           <Text
             text="↻ RESTART"
             x={baseWidth / 2}
             y={baseHeight / 2 + 50}
             anchor={0.5}
-            style={textStyle("#ffcc00", 28)}
+            style={textStyle("#ffcc00", 40)}
             interactive
             cursor="pointer"
             pointerdown={() => reset()}
