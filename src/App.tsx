@@ -5,69 +5,114 @@ import ControlPanel from "./components/ControlPanel";
 import "./App.css";
 
 export default function App() {
-  const [size, setSize] = useState({ width: 1920, height: 1080 });
-  const [isMobile, setIsMobile] = useState(false);
+  const [scale, setScale] = useState(1);
+  const [windowSize, setWindowSize] = useState({ width: 1920, height: 1080 });
+  const [titleFont, setTitleFont] = useState(75);
 
   useEffect(() => {
+    const baseWidth = 1920;
+    const baseHeight = 1080;
+
     const handleResize = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
-      const ratio = 1920 / 1080;
 
-      let newWidth = w * 0.9;
-      let newHeight = newWidth / ratio;
-      if (newHeight > h * 0.8) {
-        newHeight = h * 0.8;
-        newWidth = newHeight * ratio;
-      }
-      setSize({ width: newWidth, height: newHeight });
-      setIsMobile(w < 768);
+      // Stage 비율 계산 (제목 포함)
+      const ratio = Math.min(w / baseWidth, h / (baseHeight + 200));
+      setScale(ratio);
+      setWindowSize({ width: w, height: h });
+
+      // 제목 글씨 반응형
+      if (w < 768) setTitleFont(50);
+      else if (w < 1024) setTitleFont(60);
+      else setTitleFont(75);
     };
+
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // ✅ 버튼 크기도 Stage 스케일에 맞춰 비례하도록 계산
+  const buttonScale = Math.max(0.6, scale); // 너무 작아지지 않게 하한선 설정 (0.6배 이하로 안 줄어듦)
+
   return (
     <div
       className="App"
       style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
+        backgroundColor: "#111",
         height: "100vh",
         width: "100vw",
         overflow: "hidden",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        position: "relative",
       }}
     >
+      {/* 제목 */}
       <h2
         style={{
-          marginBottom: "10px",
-          textAlign: "center",
+          position: "absolute",
+          top: "2%",
+          left: "50%",
+          transform: "translateX(-50%) scaleY(0.85)",
+          margin: 0,
+          padding: 0,
           fontFamily: "Creepster, cursive",
           fontWeight: 600,
-          fontSize: "4rem",
+          fontSize: `${titleFont}px`,
           color: "#fff",
-          letterSpacing: "0.2rem",
-          transform: "scaleY(0.8)",
-          display: "inline-block",
+          whiteSpace: "nowrap",
+          letterSpacing: "0.15em",
+          textShadow: "0 4px 10px rgba(0,0,0,0.7)",
+          zIndex: 10,
         }}
       >
-        For the Ghost
+        FOR THE GHOST
       </h2>
-      {/* 게임 + 버튼 묶음 */}
+
+      {/* Stage (비율 유지 + 중앙 정렬) */}
       <div
         style={{
+          transform: `scale(${scale})`,
+          transformOrigin: "center center",
+          width: `${1920}px`,
+          height: `${1080}px`,
           display: "flex",
-          flexDirection: isMobile ? "column" : "row",
           justifyContent: "center",
-          gap: "20px",
+          alignItems: "center",
+          marginTop: "60px",
         }}
       >
-        <Stage width={size.width} height={size.height} options={{ backgroundColor: 0x000000 }}>
+        <Stage
+          width={1920}
+          height={1080}
+          options={{
+            backgroundColor: 0x000000,
+            resolution: window.devicePixelRatio,
+            autoDensity: true,
+          }}
+          style={{
+            width: "1920px",
+            height: "1080px",
+          }}
+        >
           <GameStage />
         </Stage>
+      </div>
+
+      {/* 버튼 (Stage와 독립적, scale 연동) */}
+      <div
+        style={{
+          position: "absolute",
+          right: "5%",
+          top: "55%",
+          transform: `translateY(-50%) scale(${buttonScale})`, // ✅ 버튼 크기도 스케일링
+          transformOrigin: "center right",
+          zIndex: 20,
+        }}
+      >
         <ControlPanel />
       </div>
     </div>
