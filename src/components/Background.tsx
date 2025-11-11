@@ -12,15 +12,15 @@ export default function Background() {
   const bg1 = useRef<PIXI.Sprite | null>(null);
   const bg2 = useRef<PIXI.Sprite | null>(null);
 
-  const bgWidth = 12270;
-  const bgHeight = 4000;
+  const bgWidth = 3313;
+  const bgHeight = 1080;
 
 
   const viewWidth = 1920;
   const viewHeight = 1080;
 
 
-  const scale = Math.max(viewWidth / bgWidth, viewHeight / bgHeight);
+  const scale = viewHeight / bgHeight;
   const displayWidth = bgWidth * scale;
   const displayHeight = bgHeight * scale;
 
@@ -35,7 +35,7 @@ export default function Background() {
 
     const tween1 = gsap.to(s1, {
       x: -displayWidth,
-      duration: 20, // ← 배경 속도 (커질수록 느림)
+      duration: 20, // 배경 속도 (커질수록 느림)
       repeat: -1,
       ease: "none",
       modifiers: {
@@ -77,7 +77,7 @@ export default function Background() {
         ref={bg1 as any}
         image="/bg.png"
         x={0}
-        y={(viewHeight - displayHeight) / 2}
+        y={0}
         width={displayWidth}
         height={displayHeight}
       />
@@ -85,7 +85,7 @@ export default function Background() {
         ref={bg2 as any}
         image="/bg.png"
         x={displayWidth}
-        y={(viewHeight - displayHeight) / 2}
+        y={0}
         width={displayWidth}
         height={displayHeight}
       />

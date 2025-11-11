@@ -72,7 +72,7 @@ export default function App() {
         FOR THE GHOST
       </h2>
 
-      {/* Stage (비율 유지 + 중앙 정렬) */}
+      {/* Stage */}
       <div
         style={{
           transform: `scale(${scale})`,
@@ -102,13 +102,13 @@ export default function App() {
         </Stage>
       </div>
 
-      {/* 버튼 (Stage와 독립적, scale 연동) */}
+      {/* 버튼 */}
       <div
         style={{
           position: "absolute",
           right: "5%",
           top: "55%",
-          transform: `translateY(-50%) scale(${buttonScale})`, // ✅ 버튼 크기도 스케일링
+          transform: `translateY(-50%) scale(${buttonScale})`,
           transformOrigin: "center right",
           zIndex: 20,
         }}

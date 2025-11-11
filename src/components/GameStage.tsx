@@ -26,7 +26,7 @@ export default function GameStage() {
       const type = Math.random() < 0.7 ? "candle" : "tomb";
       setItems((prev) => [
         ...prev,
-        { id: Date.now(), y: 100 + Math.random() * 900, type },
+        { id: Date.now(), y: 100 + Math.random() * 800, type },
       ]);
     }, spawnInterval);
     return () => clearInterval(spawn);
@@ -120,7 +120,7 @@ export default function GameStage() {
     });
 
   return (
-    <Container>
+    <Container width={baseWidth} height={baseHeight}>
       {/* 배경 */}
       {background}
 

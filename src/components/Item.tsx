@@ -15,7 +15,7 @@ export default function Item({ type, y }: ItemProps) {
   const speed = 8;
   const ref = useRef<any>(null);
 
-  const width = type === "candle" ? 150 : 350;
+  const width = type === "candle" ? 120 : 310;
   const height = type === "candle" ? 170 : 370;
 
   useTick(() => {
