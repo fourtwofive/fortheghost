@@ -33,8 +33,8 @@ export default function App() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // ✅ 버튼 크기도 Stage 스케일에 맞춰 비례하도록 계산
-  const buttonScale = Math.max(0.6, scale); // 너무 작아지지 않게 하한선 설정 (0.6배 이하로 안 줄어듦)
+  
+  const buttonScale = Math.max(0.6, scale); 
 
   return (
     <div

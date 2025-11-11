@@ -1,6 +1,7 @@
 import { Sprite, useTick } from "@pixi/react";
 import { useState, useRef } from "react";
 import useGameStore from "../store/useGameStore";
+import { checkCollision } from "../utils/collision";
 
 interface ItemProps {
   type: "candle" | "tomb";
@@ -14,7 +15,6 @@ export default function Item({ type, y }: ItemProps) {
   const speed = 8;
   const ref = useRef<any>(null);
 
-  // 실제 시각적 크기
   const width = type === "candle" ? 150 : 350;
   const height = type === "candle" ? 170 : 370;
 
@@ -24,27 +24,18 @@ export default function Item({ type, y }: ItemProps) {
     setX((prev) => {
       const newX = prev - speed;
 
-      // 고스트 위치 기준값 (Player 컴포넌트의 x=300, width=300, height=400 기준)
-      const ghostX = 300;
-      const ghostWidth = 300;
-      const ghostHeight = 400;
-
-      // AABB(사각형 충돌) 검사
-      const ghostLeft = ghostX - ghostWidth / 2;
-      const ghostRight = ghostX + ghostWidth / 2;
-      const ghostTop = ghostY - ghostHeight / 2;
-      const ghostBottom = ghostY + ghostHeight / 2;
-
-      const itemLeft = newX - width / 2;
-      const itemRight = newX + width / 2;
-      const itemTop = y - height / 2;
-      const itemBottom = y + height / 2;
-
-      const isColliding =
-        ghostRight > itemLeft &&
-        ghostLeft < itemRight &&
-        ghostBottom > itemTop &&
-        ghostTop < itemBottom;
+      const isColliding = checkCollision(
+        300,        // ghostX (고정)
+        ghostY,     // ghostY (실시간)
+        300,        // ghostWidth
+        400,        // ghostHeight
+        newX,       // itemX
+        y,          // itemY
+        width,
+        height,
+        0.7,        // ghost hitbox scale
+        0.6         // item hitbox scale
+      );
 
       if (isColliding) {
         if (type === "candle") {

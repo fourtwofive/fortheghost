@@ -172,8 +172,8 @@ export default function Player() {
       textures={textures}
       x={300}
       y={y}
-      width={300}
-      height={400}
+      width={230}
+      height={330}
       anchor={0.5}
       isPlaying={true}
       animationSpeed={0.1}
